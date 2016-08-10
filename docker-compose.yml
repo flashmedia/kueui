@@ -1,0 +1,10 @@
+kueui:
+    build: ./kueui
+    restart: always
+    volumes:
+        - /vagrant/kueui/root/app:/app
+    ports:
+        - 6001:6001
+    environment:
+        - APP_PORT=6001
+        - CACHE_URL=redis://cache.repcoservice.local:6379

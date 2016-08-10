@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+USAGE="Usage:\n  c [COMMAND] [ARGS...]\n  c -h|--help\nCommands:\n up \t\t Bring up all containers \n exec \t\t Docker exec into a container \n restart \t Restart a container \n env \t\t Change the environment for docker \n"
+
+if [ ! -n "$1" ]; then
+    printf "Please provide a command. \n${USAGE}"
+    exit 1
+fi
+
+case "$1" in
+
+up)
+
+    dc stop && dc rm -f --all && dc up -d
+    ;;
+
+restart)
+
+    if [ ! -n "$2" ]; then
+        printf "Please provide a container name. For example: \n  c up app \n"
+        exit 1
+    fi
+
+    # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+    CONTAINERNAME=${2%/}
+
+    dc stop $CONTAINERNAME && dc rm -f --all $CONTAINERNAME && dc up -d --no-recreate $CONTAINERNAME && dc logs -f $CONTAINERNAME
+    ;;
+
+exec)
+
+    if [ ! -n "$2" ]; then
+        printf "Please provide a container name. For example: \n  c exec consul [container number, defaults to 1] \n  c exec consul 2 \n"
+        exit 1
+    fi
+
+    # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+    CONTAINERNAME=${2%/}
+
+    docker exec -it ${COMPOSE_PROJECT_NAME}_${CONTAINERNAME}_${3:-'1'} with-contenv sh
+    ;;
+
+env)
+
+    if [ ! -n "$2" ]; then
+        printf "Please provide an environment name. \n"
+        exit 1
+    fi
+
+    if test "$2" = 'reset' -o "$2" = 'RESET'; then
+        # Reset dc to load default docker-compose.yml file
+        echo COMPOSE_FILE=docker-compose.yml > .env
+        printf "You have reset 'dc' to load the default docker-compose.yml file.\n"
+        exit 1
+    fi
+
+    # Add COMPOSE_FILE environment variable to .env file
+    echo COMPOSE_FILE=docker-compose.yml:docker-compose.${2}.yml > .env
+    printf "You have configured 'dc' to load from docker-compose.yml and docker-compose.${2}.yml. \nMake sure docker-compose.${2}.yml exists. \n"
+    ;;
+
+logs)
+
+    if [ ! -n "$2" ]; then
+        dc logs -f
+        exit 0
+    fi
+
+    # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+    CONTAINERNAME=${2%/}
+
+    dc logs -f $CONTAINERNAME
+    ;;
+
+npm)
+
+    if [ ! -n "$2" ]; then
+        printf "Please provide a container name. \n"
+        exit 1
+    fi
+
+    # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+    CONTAINERNAME=${2%/}
+
+    if [ ! -n "$3" ]; then
+        cd ${CONTAINERNAME}/root/app && npm install
+        exit 0
+    fi
+
+    cd ${CONTAINERNAME}/root/app && npm install ${3}
+    ;;
+
+-h|--help)
+
+    printf "${USAGE}"
+    ;;
+
+*)
+
+    printf "$1 is not supported. \n ${USAGE}"
+    ;;
+
+esac

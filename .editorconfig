@@ -1,0 +1,24 @@
+; editorconfig.org
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{js,json,html,eslintrc,yml}]
+indent_style = space
+indent_size = 4
+
+[*.jade,Makefile]
+indent_style = tab
+indent_size = 4
+
+[*.{styl}]
+indent_style = space
+indent_size = 2
+
+[Vagrantfile]
+indent_style = space
+indent_size = 2

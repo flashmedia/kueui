@@ -1,0 +1,18 @@
+{
+  "name": "kueui",
+  "version": "1.0.0",
+  "description": "KUE admin ui",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flashmedia/kueui.git"
+  },
+  "author": "Sandy Trinh",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/flashmedia/kueui",
+  "dependencies": {
+    "express": "^4.14.0",
+    "kue": "^0.11.0",
+    "kue-ui": "^0.1.0"
+  }
+}

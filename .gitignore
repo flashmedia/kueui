@@ -1,0 +1,12 @@
+.DS_Store
+.project
+*.sublime-project
+*.sublime-workspace
+Thumbs.db
+node_modules
+npm-debug.log
+.vagrant
+.tags*
+.env
+.floo
+.flooignore
