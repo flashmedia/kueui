@@ -18,10 +18,10 @@ To run this container, you will need to supply the following environment variabl
 
 There are 2 versions of the KUE UI that you can access:
 
-- built-in version http://<domain>:<port>/api
-- [custom version](https://github.com/stonecircle/kue-ui) http://<domain>:<port>/kue
+- built-in version http://{domain}:{port}/api
+- [custom version](https://github.com/stonecircle/kue-ui) http://{domain}:{port}/kue
 
-To access the KUE UI on local, browse to the following URLs:
+To access the KUE UI on local this vagrant instance, browse to the following URLs:
 
 - http://192.168.11.23:6001/api
 - http://192.168.11.23:6001/kue
