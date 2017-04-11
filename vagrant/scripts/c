@@ -7,7 +7,133 @@ if [ ! -n "$1" ]; then
     exit 1
 fi
 
+npm_install_in_container () {
+
+    # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+    local CONTAINERNAME=$1
+
+    # Build the NPM command
+    local COMMANDSTR=$2
+
+    printf "\nIn $CONTAINERNAME:"
+    printf "\n$COMMANDSTR\n\n"
+
+    # Create a folder if it doesn't exist for the package.json
+    mkdir -p /npm/$CONTAINERNAME
+    mkdir -p /npm/$CONTAINERNAME/node_modules
+
+    # Make sure the node_modules directory in the target exists
+    mkdir -p ./$CONTAINERNAME/root/app/node_modules
+
+    # Empty the directory if it does exist
+    rm -rf /npm/$CONTAINERNAME/node_modules/*
+
+    if [ ! -e ./$CONTAINERNAME/root/app/package.json ]; then
+        printf "\nError: Could not find a package.json file in the $CONTAINERNAME/root/app directory.\n\n"
+        exit 1
+    fi
+
+    # Copy the package.json and node_modules across
+    cp -f ./$CONTAINERNAME/root/app/package.json /npm/$CONTAINERNAME
+    cp -rf ./$CONTAINERNAME/root/app/node_modules/* /npm/$CONTAINERNAME/node_modules
+
+    # Move into the correct directory.
+    cd /npm/$CONTAINERNAME
+
+    # Install the node modules
+    eval $COMMANDSTR
+
+    # Move back into the `/vagrant` directory.
+    cd /vagrant
+
+    # Remove the current node_modules
+    rm -rf ./$CONTAINERNAME/root/app/node_modules/*
+
+    # Copy the newly installed ones across, and the package.json
+    cp -fr /npm/$CONTAINERNAME/node_modules/* ./$CONTAINERNAME/root/app/node_modules
+    cp -f /npm/$CONTAINERNAME/package.json ./$CONTAINERNAME/root/app
+    if [ -e /npm/$CONTAINERNAME/node_modules/.bin ]; then
+        mkdir -p ./$CONTAINERNAME/root/app/node_modules/.bin
+        cp -fr /npm/$CONTAINERNAME/node_modules/.bin/* ./$CONTAINERNAME/root/app/node_modules/.bin
+    fi
+
+}
+
 case "$1" in
+
+ps)
+
+  dc ps
+  ;;
+
+pull)
+
+  if [ ! -n "$2" ]; then
+    dc pull
+    exit 0
+  fi
+
+  # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+  CONTAINERNAME=${2%/}
+
+  dc pull $CONTAINERNAME
+  ;;
+
+down)
+
+  if [ ! -n "$2" ]; then
+    dc stop && dc rm -f --all
+    exit 0
+  fi
+
+  # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+  CONTAINERNAME=${2%/}
+
+  dc stop $CONTAINERNAME && dc rm -f --all $CONTAINERNAME
+  ;;
+
+kill)
+
+  if [ ! -n "$2" ]; then
+    dc kill
+    exit 0
+  fi
+
+  # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+  CONTAINERNAME=${2%/}
+
+  dc kill $CONTAINERNAME
+  ;;
+
+build)
+
+    if [ ! -n "$2" ]; then
+        dc build
+        exit 0
+    fi
+
+    # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+    CONTAINERNAME=${2%/}
+
+    dc build $CONTAINERNAME
+    ;;
+
+rebuild)
+
+    if [ ! -n "$2" ]; then
+        dc stop && dc rm -f --all && dc build && dc up -d && dc scale consul=2
+        exit 0
+    fi
+
+    # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
+    CONTAINERNAME=${2%/}
+
+    dc stop $CONTAINERNAME && dc rm -f --all $CONTAINERNAME && dc build $CONTAINERNAME && dc up -d --no-recreate $CONTAINERNAME
+
+    if [ "$CONTAINERNAME" = "consul"]; then
+        dc scale consul=2
+    fi
+    ;;
 
 up)
 
@@ -79,15 +205,28 @@ npm)
         exit 1
     fi
 
-    # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
-    CONTAINERNAME=${2%/}
+    # Work out the NPM command we need to run
+    COMMANDSTR="npm"
+    for i in ${@:3:${#@}}
+    do
+      COMMANDSTR+=" $i"
+    done
 
-    if [ ! -n "$3" ]; then
-        cd ${CONTAINERNAME}/root/app && npm install
+    # If $2 was "all" then run it in all Node.js containers.
+    if [ "${2%/}" = "all" ]; then
+
+        for CONTAINER in "app"
+        do
+
+            npm_install_in_container "$CONTAINER" "$COMMANDSTR"
+
+        done
         exit 0
+
     fi
 
-    cd ${CONTAINERNAME}/root/app && npm install ${3}
+    # Just one container to run the command in
+    npm_install_in_container "${2%/}" "$COMMANDSTR"
     ;;
 
 -h|--help)

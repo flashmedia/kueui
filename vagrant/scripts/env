@@ -3,14 +3,14 @@
 // load in a JSON variable, and output to a file that /etc/profile.d will load
 
 var path = require('path'),
-    exec = require('child_process').exec,
-    fs = require('fs'),
-    env = require(path.resolve(__dirname, '..', 'config', 'env.json')),
-    output = '';
+	exec = require('child_process').exec,
+	fs = require('fs'),
+	env = require(path.resolve(__dirname, '..', 'config', 'env.json')),
+	output = '';
 
 // loop over each and output
 Object.keys(env).forEach(function (key) {
-    output += 'export ' + key + '=' + env[key] + '\n';
+	output += 'export ' + key + '=' + env[key] + '\n';
 });
 
 // now write the file to /etc/profile.d/development.sh
@@ -19,6 +19,6 @@ fs.writeFileSync('/etc/profile.d/development.sh', output);
 // update the file to be executable
 exec('chmod a+x /etc/profile.d/development.sh', function () {
 
-    console.log('>>> environment variables created...');
+	console.log('>>> environment variables created...');
 
 });
