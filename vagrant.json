@@ -1,0 +1,9 @@
+{
+    "hostname": "kueuidev",
+    "hostAliases": "kueui.repcoservice.local",
+    "memory": 200,
+    "cpus": 1,
+    "env": {
+        "NODE_ENV": "development"
+    }
+}
