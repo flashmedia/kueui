@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-USAGE="Usage:\n  c [COMMAND] [ARGS...]\n  c -h|--help\nCommands:\n up \t\t Bring up all containers \n exec \t\t Docker exec into a container \n restart \t Restart a container \n env \t\t Change the environment for docker \n"
+USAGE="Usage:\n  c [COMMAND] [ARGS...]\n  c -h|--help\nCommands:\n ps \t\t List all running containers \n pull \t\t Pull service images(containers or specific container with pull <container-name>) \n down \t\t Bring all running containers down \n kill \t\t kill all containers (or specific container with kill <container-name>) \n build \t\t Build all containers (or specific container with build <container-name>) \n rebuild \t\t Rebuild all containers (or specific container with rebuild <container-name>) and restart them \n up \t\t Bring up all containers \n exec \t\t Docker exec into a container \n restart \t Restart a container \n env \t\t Change the environment for docker \n npm \t\t Execute an NPM command specific to a container (i.e c npm app install) or within the context of all Node.js containers (i.e npm all install) \n"
 
 if [ ! -n "$1" ]; then
     printf "Please provide a command. \n${USAGE}"
