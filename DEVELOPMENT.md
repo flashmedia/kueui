@@ -21,8 +21,29 @@ There are files for editors that should keep the file formatting consistent with
 
 - Fork the repository.
 - Clone your fork locally.
-- Start the vagrant machine by running `vagrant up`.
-- To test the images, run `c up` - this is a custom script that has been build to help with every development with docker compose
+- Start the vagrant machine by running `vagrant up --provider=virtualbox`.
+
+Once the VM is created, continue with the process:
+
+- Execute `vagrant ssh` to be provided with a bash shell within the virtual machine.
+- Get into the `/vagrant` directory, by executing `cd /vagrant`
+
+Now install the node modules in all required directories inside `vagrant` as follow:
+
+- Execute `c npm kueui install`
+
+Finally run the docker containers to have the application up and running:
+
+- Execute `c build` to use Docker compose to build the Docker containers.
+- Execute `c up` to start the containers in daemon mode
+
+Now you have everything required to run the application, and the application itself will be running.
+
+To access the KUE UI on this vagrant instance, browse to the following URLs:
+
+- http://kueui.repcoservice.local:6001/api
+- http://kueui.repcoservice.local:6001/kue
+
 
 [vagrant]: https://www.vagrantup.com/
 [vmwareworkstation]: https://www.vmware.com/au/products/workstation/
