@@ -82,14 +82,14 @@ pull)
 down)
 
   if [ ! -n "$2" ]; then
-    dc stop && dc rm -f --all
+    dc stop && dc rm -f
     exit 0
   fi
 
   # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
   CONTAINERNAME=${2%/}
 
-  dc stop $CONTAINERNAME && dc rm -f --all $CONTAINERNAME
+  dc stop $CONTAINERNAME && dc rm -f $CONTAINERNAME
   ;;
 
 kill)
@@ -121,14 +121,14 @@ build)
 rebuild)
 
     if [ ! -n "$2" ]; then
-        dc stop && dc rm -f --all && dc build && dc up -d && dc scale consul=2
+        dc stop && dc rm -f && dc build && dc up -d && dc scale consul=2
         exit 0
     fi
 
     # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
     CONTAINERNAME=${2%/}
 
-    dc stop $CONTAINERNAME && dc rm -f --all $CONTAINERNAME && dc build $CONTAINERNAME && dc up -d --no-recreate $CONTAINERNAME
+    dc stop $CONTAINERNAME && dc rm -f $CONTAINERNAME && dc build $CONTAINERNAME && dc up -d --no-recreate $CONTAINERNAME
 
     if [ "$CONTAINERNAME" = "consul"]; then
         dc scale consul=2
@@ -137,7 +137,7 @@ rebuild)
 
 up)
 
-    dc stop && dc rm -f --all && dc up -d
+    dc stop && dc rm -f && dc up -d
     ;;
 
 restart)
@@ -150,7 +150,7 @@ restart)
     # remove the trailing / if there is any (this allows user to use tab to complete the container name which corresponding to the directory name)
     CONTAINERNAME=${2%/}
 
-    dc stop $CONTAINERNAME && dc rm -f --all $CONTAINERNAME && dc up -d --no-recreate $CONTAINERNAME && dc logs -f $CONTAINERNAME
+    dc stop $CONTAINERNAME && dc rm -f $CONTAINERNAME && dc up -d --no-recreate $CONTAINERNAME && dc logs -f $CONTAINERNAME
     ;;
 
 exec)
