@@ -5,9 +5,6 @@ source /vagrant/vagrant/bashurator/init.sh
 # Setup the environment.
 configure_dependencies() {
 
-    # install npm modules (as vagrant user)
-    cd /vagrant/kueui/root/app && sudo -H -u vagrant bash -c "npm install"
-
     # Alias the docker-clean-containers script
     if [ ! -e /usr/local/bin/docker-clean-containers ]; then
         ln -s /vagrant/vagrant/scripts/docker-clean-containers.sh /usr/local/bin/docker-clean-containers
