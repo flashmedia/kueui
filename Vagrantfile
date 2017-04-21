@@ -79,13 +79,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # configuration step 1: setup environment variables
   config.vm.provision "shell", path: "vagrant/env.sh"
 
-  # configuration step 2: set up handy script for docker-compose commands
-  config.vm.provision "shell", path: "vagrant/c.sh"
-
-  # configuration step 3: install development dependencies
+  # configuration step 2: install development dependencies
   config.vm.provision "shell", path: "vagrant/dependencies.sh"
 
-  # configuration step 4: clean (remove unccessary data and GBs)
+  # configuration step 3: clean (remove unccessary data and GBs)
   config.vm.provision "shell", path: "vagrant/clean.sh"
 
 end

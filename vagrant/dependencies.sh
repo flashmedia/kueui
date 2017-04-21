@@ -22,9 +22,8 @@ configure_dependencies() {
 
     # Set up handy script for tagging
     if [ ! -e /usr/local/bin/tag ]; then
-        ln -s /vagrant/vagrant/scripts/tag /usr/local/bin/tag
+        ln -s /vagrant/vagrant/scripts/tag.sh /usr/local/bin/tag
     fi
-
 
     # A temp folder for building npm modules
     mkdir -p /npm

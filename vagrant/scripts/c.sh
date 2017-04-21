@@ -215,7 +215,7 @@ npm)
     # If $2 was "all" then run it in all Node.js containers.
     if [ "${2%/}" = "all" ]; then
 
-        for CONTAINER in "app"
+        for CONTAINER in "kueui"
         do
 
             npm_install_in_container "$CONTAINER" "$COMMANDSTR"

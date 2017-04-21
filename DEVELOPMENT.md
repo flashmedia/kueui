@@ -26,16 +26,17 @@ There are files for editors that should keep the file formatting consistent with
 Once the VM is created, continue with the process:
 
 - Execute `vagrant ssh` to be provided with a bash shell within the virtual machine.
-- Get into the `/vagrant` directory, by executing `cd /vagrant`
+- Get into the `/vagrant` directory, by executing `cd /vagrant`.
 
 Now install the node modules in all required directories inside `vagrant` as follow:
 
-- Execute `c npm kueui install`
+- Execute `c npm all install`.
 
 Finally run the docker containers to have the application up and running:
 
-- Execute `c build` to use Docker compose to build the Docker containers.
-- Execute `c up` to start the containers in daemon mode
+- Log into Docker with `docker login -u <username>` (You will be prompted to provide password).
+- Execute `c pull && c build` to use Docker compose to build the Docker containers.
+- Execute `c up && c logs` to start the containers and view the logs.
 
 Now you have everything required to run the application, and the application itself will be running.
 
